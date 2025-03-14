@@ -24,26 +24,29 @@ public class DBController {
         return new QueryResult(connection, resultSet);
     }
 
-    public static void executeUpdate(String sql) throws SQLException {
+    public static void executeCreateDB(String sql) throws SQLException {
         try (Connection connection = getConnection()) {
-
-            try (Statement useStatement = connection.createStatement()) {
-                useStatement.execute("USE " + DBConfig.DATABASE_NAME.get());
-            }
-
             try (PreparedStatement updateStatement = connection.prepareStatement(sql)) {
                 updateStatement.executeUpdate();
             }
         }
     }
 
-    public static void executeUpdate(String sql, String... argument) throws SQLException {
+    public static void executeUpdate(String sql) throws SQLException {
         Connection connection = getConnection();
-
         try (Statement useStatement = connection.createStatement()) {
             useStatement.execute("USE " + DBConfig.DATABASE_NAME.get());
         }
+        try (PreparedStatement updateStatement = connection.prepareStatement(sql)) {
+            updateStatement.executeUpdate();
+        }
+    }
 
+    public static void executeUpdate(String sql, String... argument) throws SQLException {
+        Connection connection = getConnection();
+        try (Statement useStatement = connection.createStatement()) {
+            useStatement.execute("USE " + DBConfig.DATABASE_NAME.get());
+        }
         PreparedStatement updateStatement = connection.prepareStatement(sql);
         for (int i = 1; i <= argument.length; i++) {
             updateStatement.setString(i, argument[i]);
@@ -51,7 +54,7 @@ public class DBController {
         updateStatement.executeUpdate();
     }
 
-    public static class QueryResult{
+    public static class QueryResult {
         private final Connection connection;
         private final ResultSet resultSet;
 

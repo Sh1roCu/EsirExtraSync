@@ -35,7 +35,7 @@ public class AoASkillSync {
 
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) throws SQLException {
-        DBController.executeUpdate("CREATE DATABASE IF NOT EXISTS " + DBConfig.DATABASE_NAME.get());
+        DBController.executeCreateDB("CREATE DATABASE IF NOT EXISTS " + DBConfig.DATABASE_NAME.get());
 
         DBController.executeUpdate(
                 "CREATE TABLE IF NOT EXISTS skill_data (" +
