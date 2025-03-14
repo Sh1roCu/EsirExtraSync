@@ -49,7 +49,7 @@ public class DBController {
         }
         PreparedStatement updateStatement = connection.prepareStatement(sql);
         for (int i = 1; i <= argument.length; i++) {
-            updateStatement.setString(i, argument[i]);
+            updateStatement.setString(i, argument[i - 1]);
         }
         updateStatement.executeUpdate();
     }

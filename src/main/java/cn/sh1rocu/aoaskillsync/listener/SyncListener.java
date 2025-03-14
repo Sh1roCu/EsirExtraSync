@@ -106,6 +106,6 @@ public class SyncListener {
             DBController.executeUpdate("INSERT INTO skill_data(uuid,dexterity,extraction,farming,hauling,innervation) " +
                     "VALUES(?,?,?,?,?,?)", uuid, dexterity, extraction, farming, hauling, innervation);
         } else
-            DBController.executeUpdate("UPDATE skill_data SET dexterity=?,extraction=?,farming=?,hauling=?,innervation=? WHERE uuid=?)", dexterity, extraction, farming, hauling, innervation, uuid);
+            DBController.executeUpdate("UPDATE skill_data SET dexterity=?,extraction=?,farming=?,hauling=?,innervation=? WHERE uuid=?", dexterity, extraction, farming, hauling, innervation, uuid);
     }
 }
