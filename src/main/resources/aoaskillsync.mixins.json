@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "cn.sh1rocu.aoaskillsync.mixin",
+  "package": "cn.sh1rocu.esirextrasync.mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "aoaskillsync.refmap.json",
   "mixins": [

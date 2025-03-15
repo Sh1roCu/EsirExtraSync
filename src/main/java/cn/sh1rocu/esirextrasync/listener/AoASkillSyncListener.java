@@ -1,7 +1,7 @@
-package cn.sh1rocu.aoaskillsync.listener;
+package cn.sh1rocu.esirextrasync.listener;
 
-import cn.sh1rocu.aoaskillsync.util.DBController;
-import cn.sh1rocu.aoaskillsync.util.DBThreadPoolFactory;
+import cn.sh1rocu.esirextrasync.util.DBController;
+import cn.sh1rocu.esirextrasync.util.DBThreadPoolFactory;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;

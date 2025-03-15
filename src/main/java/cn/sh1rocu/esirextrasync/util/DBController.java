@@ -1,7 +1,7 @@
-package cn.sh1rocu.aoaskillsync.util;
+package cn.sh1rocu.esirextrasync.util;
 
 
-import cn.sh1rocu.aoaskillsync.config.DBConfig;
+import cn.sh1rocu.esirextrasync.config.DBConfig;
 
 import java.sql.*;
 

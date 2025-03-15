@@ -1,8 +1,8 @@
-package cn.sh1rocu.aoaskillsync;
+package cn.sh1rocu.esirextrasync;
 
-import cn.sh1rocu.aoaskillsync.config.DBConfig;
-import cn.sh1rocu.aoaskillsync.listener.AoASkillSyncListener;
-import cn.sh1rocu.aoaskillsync.util.DBController;
+import cn.sh1rocu.esirextrasync.config.DBConfig;
+import cn.sh1rocu.esirextrasync.listener.AoASkillSyncListener;
+import cn.sh1rocu.esirextrasync.util.DBController;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,12 +17,12 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
 
-@Mod(AoASkillSync.MODID)
-public class AoASkillSync {
+@Mod(EsirExtraSync.MODID)
+public class EsirExtraSync {
     public static final String MODID = "esirextrasync";
     public static final Logger LOGGER = LogManager.getLogger();
 
-    public AoASkillSync() {
+    public EsirExtraSync() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, DBConfig.COMMON_CONFIG);
         modEventBus.addListener(this::commonSetup);

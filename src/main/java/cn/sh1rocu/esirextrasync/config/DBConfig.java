@@ -1,4 +1,4 @@
-package cn.sh1rocu.aoaskillsync.config;
+package cn.sh1rocu.esirextrasync.config;
 
 
 import net.minecraftforge.common.ForgeConfigSpec;

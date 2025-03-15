@@ -1,4 +1,4 @@
-package cn.sh1rocu.aoaskillsync.util;
+package cn.sh1rocu.esirextrasync.util;
 
 
 import javax.annotation.Nonnull;
