@@ -99,7 +99,7 @@ public class ArmourersSyncListener {
             String nbt = serialize(skinWardrobe.serializeNBT().toString());
             if (init) {
                 DBController.executeUpdate("INSERT INTO armourers_data(uuid,nbt) " +
-                        "VALUES(?,?,?,?,?,?)", uuid, nbt);
+                        "VALUES(?,?)", uuid, nbt);
             } else
                 DBController.executeUpdate("UPDATE armourers_data SET nbt=? WHERE uuid=?", nbt, uuid);
         }
