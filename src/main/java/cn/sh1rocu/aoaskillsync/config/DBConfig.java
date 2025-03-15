@@ -3,8 +3,6 @@ package cn.sh1rocu.aoaskillsync.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-import java.util.List;
-
 
 public class DBConfig {
     public static ForgeConfigSpec COMMON_CONFIG;
