@@ -1,7 +1,7 @@
 package cn.sh1rocu.aoaskillsync;
 
 import cn.sh1rocu.aoaskillsync.config.DBConfig;
-import cn.sh1rocu.aoaskillsync.listener.SyncListener;
+import cn.sh1rocu.aoaskillsync.listener.AoASkillSyncListener;
 import cn.sh1rocu.aoaskillsync.util.DBController;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -19,7 +19,7 @@ import java.sql.SQLException;
 
 @Mod(AoASkillSync.MODID)
 public class AoASkillSync {
-    public static final String MODID = "aoaskillsync";
+    public static final String MODID = "esirextrasync";
     public static final Logger LOGGER = LogManager.getLogger();
 
     public AoASkillSync() {
@@ -30,7 +30,7 @@ public class AoASkillSync {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-        SyncListener.register();
+        AoASkillSyncListener.register();
     }
 
     @SubscribeEvent
@@ -45,7 +45,11 @@ public class AoASkillSync {
                         "farming BLOB," +
                         "hauling BLOB," +
                         "innervation BLOB," +
-                        "PRIMARY KEY (uuid));"
+                        "PRIMARY KEY (uuid));" +
+                        "CREATE TABLE IF NOT EXISTS armourers_data (" +
+                        "uuid CHAR(36) NOT NULL," +
+                        "nbt BLOB," +
+                        "PRIMARY KEY (uuid))"
         );
         LOGGER.info("AoASkillSync is ready!");
     }
