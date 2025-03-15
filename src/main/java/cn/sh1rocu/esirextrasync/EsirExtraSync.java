@@ -45,13 +45,15 @@ public class EsirExtraSync {
                         "farming BLOB," +
                         "hauling BLOB," +
                         "innervation BLOB," +
-                        "PRIMARY KEY (uuid));" +
-                        "CREATE TABLE IF NOT EXISTS armourers_data (" +
+                        "PRIMARY KEY (uuid));"
+        );
+        DBController.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS armourers_data (" +
                         "uuid CHAR(36) NOT NULL," +
                         "nbt BLOB," +
-                        "PRIMARY KEY (uuid))"
+                        "PRIMARY KEY (uuid));"
         );
-        LOGGER.info("AoASkillSync is ready!");
+        LOGGER.info("EsirExtraSync is ready!");
     }
 
 }

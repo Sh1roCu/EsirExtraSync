@@ -22,7 +22,7 @@ public class DBConfig {
         USE_SSL = COMMON_BUILDER.comment("whether use SSL").define("use_ssl", false);
         USERNAME = COMMON_BUILDER.comment("username").define("user_name", "root");
         PASSWORD = COMMON_BUILDER.comment("password").define("password", "password");
-        DATABASE_NAME = COMMON_BUILDER.comment("database name").define("db_name", "aoaskill_sync");
+        DATABASE_NAME = COMMON_BUILDER.comment("database name").define("db_name", "esirextra_sync");
         COMMON_BUILDER.pop();
         COMMON_CONFIG = COMMON_BUILDER.build();
     }
