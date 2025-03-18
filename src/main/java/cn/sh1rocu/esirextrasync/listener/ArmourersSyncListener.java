@@ -19,10 +19,6 @@ import java.util.concurrent.Executors;
 
 @Mod.EventBusSubscriber
 public class ArmourersSyncListener {
-
-    public static void register() {
-    }
-
     static ExecutorService executorService = Executors.newCachedThreadPool(new DBThreadPoolFactory("ArmourersSync"));
 
     public static void doPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) throws SQLException, CommandSyntaxException {

@@ -20,10 +20,6 @@ import java.util.concurrent.Executors;
 
 @Mod.EventBusSubscriber
 public class AoASkillSyncListener {
-
-    public static void register() {
-    }
-
     static ExecutorService executorService = Executors.newCachedThreadPool(new DBThreadPoolFactory("AoASkillSync"));
 
     public static void doPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) throws SQLException, CommandSyntaxException {
