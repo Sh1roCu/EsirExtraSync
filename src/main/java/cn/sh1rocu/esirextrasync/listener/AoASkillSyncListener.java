@@ -2,10 +2,9 @@ package cn.sh1rocu.esirextrasync.listener;
 
 import cn.sh1rocu.esirextrasync.util.DBController;
 import cn.sh1rocu.esirextrasync.util.DBThreadPoolFactory;
+import cn.sh1rocu.esirextrasync.util.NbtUtil;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.JsonToNBT;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -31,11 +30,11 @@ public class AoASkillSyncListener {
             saveToDB(event.getPlayer(), true);
             return;
         }
-        PlayerUtil.getSkill(player, AoASkills.DEXTERITY.get()).loadFromNbt(deserialize(resultSet.getString("dexterity")));
-        PlayerUtil.getSkill(player, AoASkills.EXTRACTION.get()).loadFromNbt(deserialize(resultSet.getString("extraction")));
-        PlayerUtil.getSkill(player, AoASkills.FARMING.get()).loadFromNbt(deserialize(resultSet.getString("farming")));
-        PlayerUtil.getSkill(player, AoASkills.HAULING.get()).loadFromNbt(deserialize(resultSet.getString("hauling")));
-        PlayerUtil.getSkill(player, AoASkills.INNERVATION.get()).loadFromNbt(deserialize(resultSet.getString("innervation")));
+        PlayerUtil.getSkill(player, AoASkills.DEXTERITY.get()).loadFromNbt(NbtUtil.deserialize(resultSet.getString("dexterity")));
+        PlayerUtil.getSkill(player, AoASkills.EXTRACTION.get()).loadFromNbt(NbtUtil.deserialize(resultSet.getString("extraction")));
+        PlayerUtil.getSkill(player, AoASkills.FARMING.get()).loadFromNbt(NbtUtil.deserialize(resultSet.getString("farming")));
+        PlayerUtil.getSkill(player, AoASkills.HAULING.get()).loadFromNbt(NbtUtil.deserialize(resultSet.getString("hauling")));
+        PlayerUtil.getSkill(player, AoASkills.INNERVATION.get()).loadFromNbt(NbtUtil.deserialize(resultSet.getString("innervation")));
         resultSet.close();
     }
 
@@ -49,15 +48,6 @@ public class AoASkillSyncListener {
             }
         });
 
-    }
-
-    public static CompoundNBT deserialize(String value) throws CommandSyntaxException {
-        String nbt = value.replace("|", ",").replace("^", "\"").replace("<", "{").replace(">", "}").replace("~", "'");
-        return JsonToNBT.parseTag(nbt);
-    }
-
-    public static String serialize(String value) {
-        return value.replace(",", "|").replace("\"", "^").replace("{", "<").replace("}", ">").replace("'", "~");
     }
 
     public static void doPlayerSaveToFile(PlayerEvent.SaveToFile event) throws SQLException, IOException {
@@ -93,11 +83,11 @@ public class AoASkillSyncListener {
 
     public static void saveToDB(PlayerEntity player, boolean init) throws SQLException {
         String uuid = player.getUUID().toString();
-        String dexterity = serialize(PlayerUtil.getSkill(player, AoASkills.DEXTERITY.get()).saveToNbt().toString());
-        String extraction = serialize(PlayerUtil.getSkill(player, AoASkills.EXTRACTION.get()).saveToNbt().toString());
-        String farming = serialize(PlayerUtil.getSkill(player, AoASkills.FARMING.get()).saveToNbt().toString());
-        String hauling = serialize(PlayerUtil.getSkill(player, AoASkills.HAULING.get()).saveToNbt().toString());
-        String innervation = serialize(PlayerUtil.getSkill(player, AoASkills.INNERVATION.get()).saveToNbt().toString());
+        String dexterity = NbtUtil.serialize(PlayerUtil.getSkill(player, AoASkills.DEXTERITY.get()).saveToNbt().toString());
+        String extraction = NbtUtil.serialize(PlayerUtil.getSkill(player, AoASkills.EXTRACTION.get()).saveToNbt().toString());
+        String farming = NbtUtil.serialize(PlayerUtil.getSkill(player, AoASkills.FARMING.get()).saveToNbt().toString());
+        String hauling = NbtUtil.serialize(PlayerUtil.getSkill(player, AoASkills.HAULING.get()).saveToNbt().toString());
+        String innervation = NbtUtil.serialize(PlayerUtil.getSkill(player, AoASkills.INNERVATION.get()).saveToNbt().toString());
         if (init) {
             DBController.executeUpdate("INSERT INTO skill_data(uuid,dexterity,extraction,farming,hauling,innervation) " +
                     "VALUES(?,?,?,?,?,?)", uuid, dexterity, extraction, farming, hauling, innervation);

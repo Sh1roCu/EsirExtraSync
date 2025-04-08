@@ -2,11 +2,10 @@ package cn.sh1rocu.esirextrasync.listener;
 
 import cn.sh1rocu.esirextrasync.util.DBController;
 import cn.sh1rocu.esirextrasync.util.DBThreadPoolFactory;
+import cn.sh1rocu.esirextrasync.util.NbtUtil;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.JsonToNBT;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -32,7 +31,7 @@ public class ArmourersSyncListener {
         }
         SkinWardrobe skinWardrobe = SkinWardrobe.of(player);
         if (skinWardrobe != null)
-            skinWardrobe.deserializeNBT(deserialize(resultSet.getString("nbt")));
+            skinWardrobe.deserializeNBT(NbtUtil.deserialize(resultSet.getString("nbt")));
         resultSet.close();
     }
 
@@ -46,15 +45,6 @@ public class ArmourersSyncListener {
             }
         });
 
-    }
-
-    public static CompoundNBT deserialize(String value) throws CommandSyntaxException {
-        String nbt = value.replace("|", ",").replace("^", "\"").replace("<", "{").replace(">", "}").replace("~", "'");
-        return JsonToNBT.parseTag(nbt);
-    }
-
-    public static String serialize(String value) {
-        return value.replace(",", "|").replace("\"", "^").replace("{", "<").replace("}", ">").replace("'", "~");
     }
 
     public static void doPlayerSaveToFile(PlayerEvent.SaveToFile event) throws SQLException, IOException {
@@ -92,7 +82,7 @@ public class ArmourersSyncListener {
         String uuid = player.getUUID().toString();
         SkinWardrobe skinWardrobe = SkinWardrobe.of(player);
         if (skinWardrobe != null) {
-            String nbt = serialize(skinWardrobe.serializeNBT().toString());
+            String nbt = NbtUtil.serialize(skinWardrobe.serializeNBT().toString());
             if (init) {
                 DBController.executeUpdate("INSERT INTO armourers_data(uuid,nbt) " +
                         "VALUES(?,?)", uuid, nbt);

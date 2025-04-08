@@ -46,6 +46,12 @@ public class EsirExtraSync {
                         "nbt BLOB," +
                         "PRIMARY KEY (uuid));"
         );
+        DBController.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS diet_data (" +
+                        "uuid CHAR(36) NOT NULL," +
+                        "nbt BLOB," +
+                        "PRIMARY KEY (uuid));"
+        );
         LOGGER.info("EsirExtraSync is ready!");
     }
 
