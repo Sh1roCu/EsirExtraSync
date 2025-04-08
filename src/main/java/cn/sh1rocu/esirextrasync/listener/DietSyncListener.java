@@ -186,7 +186,7 @@ public class DietSyncListener {
         String uuid = player.getUUID().toString();
         LazyOptional<IDietTracker> iDietTrackerLazyOptional = DietCapability.get(player);
         if (iDietTrackerLazyOptional.isPresent()) {
-            String nbt = loadNbtFromDiet(iDietTrackerLazyOptional.orElse(new DietTrackerCapability.EmptyDietTracker())).toString();
+            String nbt = NbtUtil.serialize(loadNbtFromDiet(iDietTrackerLazyOptional.orElse(new DietTrackerCapability.EmptyDietTracker())).toString());
             if (init) {
                 DBController.executeUpdate("INSERT INTO diet_data(uuid,nbt) " +
                         "VALUES(?,?)", uuid, nbt);
