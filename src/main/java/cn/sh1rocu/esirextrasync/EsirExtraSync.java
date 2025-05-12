@@ -52,7 +52,16 @@ public class EsirExtraSync {
                         "nbt BLOB," +
                         "PRIMARY KEY (uuid));"
         );
+        DBController.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS legendary_survival_data (" +
+                        "uuid CHAR(36) NOT NULL," +
+                        "temperature BLOB," +
+                        "heart_modifier BLOB," +
+                        "wetness BLOB," +
+                        "thirst BLOB," +
+                        "body_damage BLOB," +
+                        "PRIMARY KEY (uuid));"
+        );
         LOGGER.info("EsirExtraSync is ready!");
     }
-
 }

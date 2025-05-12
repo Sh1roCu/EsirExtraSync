@@ -32,7 +32,7 @@ import java.util.concurrent.Executors;
 
 @Mod.EventBusSubscriber
 public class DietSyncListener {
-    static ExecutorService executorService = Executors.newCachedThreadPool(new DBThreadPoolFactory("AoASkillSync"));
+    static ExecutorService executorService = Executors.newCachedThreadPool(new DBThreadPoolFactory("DietSync"));
 
     public static void doPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) throws SQLException, CommandSyntaxException {
         PlayerEntity player = event.getPlayer();
@@ -47,6 +47,7 @@ public class DietSyncListener {
                 NbtUtil.deserialize(resultSet.getString("nbt")),
                 DietCapability.get(player).orElse(new DietTrackerCapability.EmptyDietTracker())
         );
+        resultSet.close();
     }
 
     @SubscribeEvent

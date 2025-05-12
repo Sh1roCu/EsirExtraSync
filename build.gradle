@@ -161,6 +161,7 @@ dependencies {
     implementation fg.deobf("curse.maven:aoa3-311054:4431558")
     implementation fg.deobf("curse.maven:armourers_workshop-229523:5377674")
     implementation fg.deobf("curse.maven:diet-443570:4571173")
+    implementation fg.deobf("curse.maven:legendary-survival-overhaul-840254:6079094")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
 }
