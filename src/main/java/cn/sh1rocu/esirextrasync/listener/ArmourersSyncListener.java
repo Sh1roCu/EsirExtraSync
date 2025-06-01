@@ -1,81 +1,36 @@
 package cn.sh1rocu.esirextrasync.listener;
 
 import cn.sh1rocu.esirextrasync.util.DBController;
-import cn.sh1rocu.esirextrasync.util.DBThreadPoolFactory;
 import cn.sh1rocu.esirextrasync.util.NbtUtil;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-@Mod.EventBusSubscriber
 public class ArmourersSyncListener {
-    static ExecutorService executorService = Executors.newCachedThreadPool(new DBThreadPoolFactory("ArmourersSync"));
-
-    public static void doPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) throws SQLException, CommandSyntaxException {
-        PlayerEntity player = event.getPlayer();
+    public static void doPlayerJoin(PlayerEntity player) throws SQLException, CommandSyntaxException {
         String uuid = player.getUUID().toString();
         DBController.QueryResult queryResult = DBController.executeQuery("SELECT * FROM armourers_data WHERE uuid='" + uuid + "';");
         ResultSet resultSet = queryResult.getResultSet();
         if (!resultSet.next()) {
-            saveToDB(event.getPlayer(), true);
+            saveToDB(player, true);
             return;
         }
         SkinWardrobe skinWardrobe = SkinWardrobe.of(player);
         if (skinWardrobe != null)
             skinWardrobe.deserializeNBT(NbtUtil.deserialize(resultSet.getString("nbt")));
         resultSet.close();
+        queryResult.getConnection().close();
     }
 
-    @SubscribeEvent
-    public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        executorService.submit(() -> {
-            try {
-                doPlayerJoin(event);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
+    public static void doPlayerSaveToFile(PlayerEntity player) throws SQLException {
+        saveToDB(player, false);
     }
 
-    public static void doPlayerSaveToFile(PlayerEvent.SaveToFile event) throws SQLException, IOException {
-        saveToDB(event.getPlayer(), false);
-    }
-
-    @SubscribeEvent
-    public static void onPlayerSaveToFile(PlayerEvent.SaveToFile event) {
-        executorService.submit(() -> {
-            try {
-                doPlayerSaveToFile(event);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    public static void doPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) throws SQLException {
-        saveToDB(event.getPlayer(), false);
-    }
-
-    @SubscribeEvent
-    public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-        executorService.submit(() -> {
-            try {
-                doPlayerLogout(event);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
+    public static void doPlayerLogout(PlayerEntity player) throws SQLException {
+        saveToDB(player, false);
     }
 
     public static void saveToDB(PlayerEntity player, boolean init) throws SQLException {
