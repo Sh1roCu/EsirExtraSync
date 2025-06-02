@@ -26,17 +26,17 @@ import java.util.*;
 
 public class DietSyncListener {
     public static void doPlayerJoin(PlayerEntity player) throws SQLException, CommandSyntaxException {
-        String uuid = player.getUUID().toString();
+        String uuid = player.getStringUUID();
         DBController.QueryResult queryResult = DBController.executeQuery("SELECT * FROM diet_data WHERE uuid='" + uuid + "';");
         ResultSet resultSet = queryResult.getResultSet();
         if (!resultSet.next()) {
             saveToDB(player, true);
-            return;
+        } else {
+            loadDietFromNbt(
+                    NbtUtil.deserialize(resultSet.getString("nbt")),
+                    DietCapability.get(player).orElse(new DietTrackerCapability.EmptyDietTracker())
+            );
         }
-        loadDietFromNbt(
-                NbtUtil.deserialize(resultSet.getString("nbt")),
-                DietCapability.get(player).orElse(new DietTrackerCapability.EmptyDietTracker())
-        );
         resultSet.close();
         queryResult.getConnection().close();
     }
@@ -131,7 +131,7 @@ public class DietSyncListener {
         instance.setActive(!tag.contains("Active") || tag.getBoolean("Active"));
     }
 
-    public static void doPlayerSaveToFile(PlayerEntity player) throws SQLException {
+    public static void doAutoSave(PlayerEntity player) throws SQLException {
         saveToDB(player, false);
     }
 
@@ -140,7 +140,7 @@ public class DietSyncListener {
     }
 
     public static void saveToDB(PlayerEntity player, boolean init) throws SQLException {
-        String uuid = player.getUUID().toString();
+        String uuid = player.getStringUUID();
         LazyOptional<IDietTracker> iDietTrackerLazyOptional = DietCapability.get(player);
         if (iDietTrackerLazyOptional.isPresent()) {
             String nbt = NbtUtil.serialize(loadNbtFromDiet(iDietTrackerLazyOptional.orElse(new DietTrackerCapability.EmptyDietTracker())).toString());

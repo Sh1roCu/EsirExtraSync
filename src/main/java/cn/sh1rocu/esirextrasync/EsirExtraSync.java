@@ -31,6 +31,12 @@ public class EsirExtraSync {
         DBController.executeCreateDB("CREATE DATABASE IF NOT EXISTS " + DBConfig.DATABASE_NAME.get());
 
         DBController.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS sync_status (" +
+                        "uuid CHAR(36) NOT NULL," +
+                        "is_syncing boolean," +
+                        "PRIMARY KEY (uuid));"
+        );
+        DBController.executeUpdate(
                 "CREATE TABLE IF NOT EXISTS skill_data (" +
                         "uuid CHAR(36) NOT NULL," +
                         "dexterity BLOB," +

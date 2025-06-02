@@ -11,23 +11,23 @@ import java.sql.SQLException;
 
 public class LegendarySurvivalSyncListener {
     public static void doPlayerJoin(PlayerEntity player) throws SQLException, CommandSyntaxException {
-        String uuid = player.getUUID().toString();
+        String uuid = player.getStringUUID();
         DBController.QueryResult queryResult = DBController.executeQuery("SELECT * FROM legendary_survival_data WHERE uuid='" + uuid + "';");
         ResultSet resultSet = queryResult.getResultSet();
         if (!resultSet.next()) {
             saveToDB(player, true);
-            return;
+        } else {
+            CapabilityUtil.getTempCapability(player).readNBT(NbtUtil.deserialize(resultSet.getString("temperature")));
+            CapabilityUtil.getHeartModCapability(player).readNBT(NbtUtil.deserialize(resultSet.getString("heart_modifier")));
+            CapabilityUtil.getWetnessCapability(player).readNBT(NbtUtil.deserialize(resultSet.getString("wetness")));
+            CapabilityUtil.getThirstCapability(player).readNBT(NbtUtil.deserialize(resultSet.getString("thirst")));
+            CapabilityUtil.getBodyDamageCapability(player).readNBT(NbtUtil.deserialize(resultSet.getString("body_damage")));
         }
-        CapabilityUtil.getTempCapability(player).readNBT(NbtUtil.deserialize(resultSet.getString("temperature")));
-        CapabilityUtil.getHeartModCapability(player).readNBT(NbtUtil.deserialize(resultSet.getString("heart_modifier")));
-        CapabilityUtil.getWetnessCapability(player).readNBT(NbtUtil.deserialize(resultSet.getString("wetness")));
-        CapabilityUtil.getThirstCapability(player).readNBT(NbtUtil.deserialize(resultSet.getString("thirst")));
-        CapabilityUtil.getBodyDamageCapability(player).readNBT(NbtUtil.deserialize(resultSet.getString("body_damage")));
         resultSet.close();
         queryResult.getConnection().close();
     }
 
-    public static void doPlayerSaveToFile(PlayerEntity player) throws SQLException {
+    public static void doAutoSave(PlayerEntity player) throws SQLException {
         saveToDB(player, false);
     }
 
@@ -36,7 +36,7 @@ public class LegendarySurvivalSyncListener {
     }
 
     public static void saveToDB(PlayerEntity player, boolean init) throws SQLException {
-        String uuid = player.getUUID().toString();
+        String uuid = player.getStringUUID();
         String temperature = NbtUtil.serialize(CapabilityUtil.getTempCapability(player).writeNBT().toString());
         String heart_modifier = NbtUtil.serialize(CapabilityUtil.getHeartModCapability(player).writeNBT().toString());
         String wetness = NbtUtil.serialize(CapabilityUtil.getWetnessCapability(player).writeNBT().toString());
