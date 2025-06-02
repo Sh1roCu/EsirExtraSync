@@ -5,6 +5,9 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "esirextrasync.refmap.json",
   "mixins": [
+    "compat.armourers_workshop.ModCommandsMixin",
+    "compat.armourers_workshop.OpenWardrobePacketMixin",
+    "compat.armourers_workshop.SkinItemMixin"
   ],
   "client": [
   ],

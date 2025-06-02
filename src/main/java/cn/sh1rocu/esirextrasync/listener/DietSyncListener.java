@@ -142,13 +142,11 @@ public class DietSyncListener {
     public static void saveToDB(PlayerEntity player, boolean init) throws SQLException {
         String uuid = player.getStringUUID();
         LazyOptional<IDietTracker> iDietTrackerLazyOptional = DietCapability.get(player);
-        if (iDietTrackerLazyOptional.isPresent()) {
-            String nbt = NbtUtil.serialize(loadNbtFromDiet(iDietTrackerLazyOptional.orElse(new DietTrackerCapability.EmptyDietTracker())).toString());
-            if (init) {
-                DBController.executeUpdate("INSERT INTO diet_data(uuid,nbt) " +
-                        "VALUES(?,?)", uuid, nbt);
-            } else
-                DBController.executeUpdate("UPDATE diet_data SET nbt=? WHERE uuid=?", nbt, uuid);
-        }
+        String nbt = NbtUtil.serialize(loadNbtFromDiet(iDietTrackerLazyOptional.orElse(new DietTrackerCapability.EmptyDietTracker())).toString());
+        if (init) {
+            DBController.executeUpdate("INSERT INTO diet_data(uuid,nbt) " +
+                    "VALUES(?,?)", uuid, nbt);
+        } else
+            DBController.executeUpdate("UPDATE diet_data SET nbt=? WHERE uuid=?", nbt, uuid);
     }
 }
