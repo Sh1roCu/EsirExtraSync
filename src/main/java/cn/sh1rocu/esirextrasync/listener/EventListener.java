@@ -3,27 +3,18 @@ package cn.sh1rocu.esirextrasync.listener;
 import cn.sh1rocu.esirextrasync.EsirExtraSync;
 import cn.sh1rocu.esirextrasync.util.DBController;
 import cn.sh1rocu.esirextrasync.util.DBThreadPoolFactory;
-import cn.sh1rocu.esirextrasync.util.NbtUtil;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import moe.plushie.armourers_workshop.core.capability.SkinWardrobe;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import net.tslat.aoa3.common.registration.custom.AoASkills;
-import net.tslat.aoa3.util.PlayerUtil;
-import sfiomn.legendarysurvivaloverhaul.util.CapabilityUtil;
-import top.theillusivec4.diet.api.DietCapability;
-import top.theillusivec4.diet.api.IDietTracker;
-import top.theillusivec4.diet.common.capability.DietTrackerCapability;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -78,7 +69,7 @@ public class EventListener {
         IS_SYNCING.add(event.getPlayer().getStringUUID());
         executorService.submit(() -> {
             try {
-                Thread.sleep(1500);
+                Thread.sleep(1000);
                 doPlayerJoin(event);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -124,59 +115,30 @@ public class EventListener {
         }
     }
 
-/*    public static void doPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) throws SQLException {
+    public static void doPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) throws SQLException {
         PlayerEntity player = event.getPlayer();
         AoASkillSyncListener.doPlayerLogout(player);
         ArmourersSyncListener.doPlayerLogout(player);
         DietSyncListener.doPlayerLogout(player);
         LegendarySurvivalSyncListener.doPlayerLogout(player);
-    }*/
+    }
 
     @SubscribeEvent
     public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         PlayerEntity player = event.getPlayer();
         String uuid = player.getStringUUID();
-        //aoa skill
-        String dexterity = NbtUtil.serialize(PlayerUtil.getSkill(player, AoASkills.DEXTERITY.get()).saveToNbt().toString());
-        String extraction = NbtUtil.serialize(PlayerUtil.getSkill(player, AoASkills.EXTRACTION.get()).saveToNbt().toString());
-        String farming = NbtUtil.serialize(PlayerUtil.getSkill(player, AoASkills.FARMING.get()).saveToNbt().toString());
-        String hauling = NbtUtil.serialize(PlayerUtil.getSkill(player, AoASkills.HAULING.get()).saveToNbt().toString());
-        String innervation = NbtUtil.serialize(PlayerUtil.getSkill(player, AoASkills.INNERVATION.get()).saveToNbt().toString());
-
-        //armours workshop
-        SkinWardrobe skinWardrobe = SkinWardrobe.of(player);
-        String skin = skinWardrobe != null ? NbtUtil.serialize(skinWardrobe.serializeNBT().toString()) : "";
-
-        //diet
-        LazyOptional<IDietTracker> iDietTrackerLazyOptional = DietCapability.get(player);
-        String diet = NbtUtil.serialize(DietSyncListener.loadNbtFromDiet(iDietTrackerLazyOptional.orElse(new DietTrackerCapability.EmptyDietTracker())).toString());
-
-        //legendary survival
-        String temperature = NbtUtil.serialize(CapabilityUtil.getTempCapability(player).writeNBT().toString());
-        String heart_modifier = NbtUtil.serialize(CapabilityUtil.getHeartModCapability(player).writeNBT().toString());
-        String wetness = NbtUtil.serialize(CapabilityUtil.getWetnessCapability(player).writeNBT().toString());
-        String thirst = NbtUtil.serialize(CapabilityUtil.getThirstCapability(player).writeNBT().toString());
-        String body_damage = NbtUtil.serialize(CapabilityUtil.getBodyDamageCapability(player).writeNBT().toString());
-
         try {
-            DBController.executeUpdate("UPDATE sync_status SET is_syncing=1 WHERE uuid=?", player.getStringUUID());
+            DBController.executeUpdate("UPDATE sync_status SET is_syncing=1 WHERE uuid=?", uuid);
             executorService.submit(() -> {
                 try {
                     long startMillis = System.currentTimeMillis();
-                    EsirExtraSync.LOGGER.info("开始同步玩家{}{{}}的数据库数据...", player.getName().getString(), player.getStringUUID());
+                    EsirExtraSync.LOGGER.info("开始同步玩家{}{{}}的数据库数据...", player.getName().getString(), uuid);
 
-                    DBController.executeUpdate("UPDATE skill_data SET dexterity=?,extraction=?,farming=?,hauling=?,innervation=? WHERE uuid=?", dexterity, extraction, farming, hauling, innervation, uuid);
-                    if (!skin.isEmpty())
-                        DBController.executeUpdate("UPDATE armourers_data SET nbt=? WHERE uuid=?", skin, uuid);
-                    DBController.executeUpdate("UPDATE diet_data SET nbt=? WHERE uuid=?", diet, uuid);
-                    DBController.executeUpdate("UPDATE legendary_survival_data SET temperature=?,heart_modifier=?,wetness=?,thirst=?,body_damage=? WHERE uuid=?", temperature, heart_modifier, wetness, thirst, body_damage, uuid);
+                    doPlayerLogout(event);
 
-
-                    // doPlayerLogout(event);
-
-                    DBController.executeUpdate("UPDATE sync_status SET is_syncing=0 WHERE uuid=?", player.getStringUUID());
+                    DBController.executeUpdate("UPDATE sync_status SET is_syncing=0 WHERE uuid=?", uuid);
                     long endMillis = System.currentTimeMillis();
-                    EsirExtraSync.LOGGER.info("玩家{}{{}}的数据库数据同步完成，耗时{}ms", player.getName().getString(), player.getStringUUID(), endMillis - startMillis);
+                    EsirExtraSync.LOGGER.info("玩家{}{{}}的数据库数据同步完成，耗时{}ms", player.getName().getString(), uuid, endMillis - startMillis);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
